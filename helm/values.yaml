@@ -1,0 +1,22 @@
+replicaCount: 3
+
+image:
+  repository: <your-dockerhub-username>/devops-complex-project
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 80
+
+ingress:
+  enabled: true
+  name: ""
+  nginxClassName: ""
+  path: /
+  pathType: ImplementationSpecific
+  hosts:
+    - host: <your-domain.com>
+      paths:
+        - /
+  tls: []

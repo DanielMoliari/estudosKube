@@ -1,0 +1,35 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build Docker image
+      run: |
+        docker build -t <your-dockerhub-username>/devops-complex-project:latest .
+
+    - name: Push Docker image
+      run: |
+        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+        docker push <your-dockerhub-username>/devops-complex-project:latest
+
+    - name: Deploy to Kubernetes
+      uses: azure/setup-kubectl@v1
+      with:
+        version: 'latest'
+      run: |
+        kubectl apply -f k8s/deployment.yaml
+        kubectl apply -f k8s/service.yaml
+        kubectl apply -f k8s/ingress.yaml
